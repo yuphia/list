@@ -10,6 +10,11 @@ typedef
 
     size_t head;
     size_t tail;    
+
+    bool isSorted;
+
+    size_t size;
+    size_t capacity;
     }
     struct list;
 
@@ -20,7 +25,10 @@ enum listErrors
     DATA_CALLOC_FAIL,
     NEXT_CALLOC_FAIL,
     PREV_CALLOC_FAIL,
-    LIST_POINTER_SHIT
+    LIST_POINTER_SHIT,
+    REALLOC_DATA_FAIL,
+    REALLOC_NEXT_FAIL,
+    REALLOC_PREV_FAIL
     };
 
 listErrors listCtor (list* thisList);
@@ -48,6 +56,8 @@ listErrors listCtor (list* thisList)
     if (fillCheck != NO_ERROR)
         return fillCheck;
 
+    thisList->isSorted = 1;
+    thisList->size = 1;
 
     return NO_ERROR;
 }
@@ -71,5 +81,53 @@ listErrors fillConstructedList (list* thisList)
 
     }
 
+    return NO_ERROR;
+}
+
+listErrors insertListBack (list* thisList, int data)
+{
+    //verifier
+    
+    if (thisList->size + 1 > thisList->capacity)
+        
+
+    *(data + tail + 1) = data;     
+
+    //verifier
+    return NO_ERROR;
+}
+
+listErrors reallocList (list* thisList)
+{
+    //verifier
+    int* tempData = (int*) realloc ((thisList->capacity)*2*sizeof(int));
+    if (thisList->data == nullptr)
+        return REALLOC_DATA_FAIL;
+
+    int* tempNext = (int*) realloc ((thisList->capacity)*2*sizeof(int));
+    if (thisList->next == nullptr)
+        return REALLOC_NEXT_FAIL;
+
+    int* tempPrev = (int*) calloc ((thisList->capacity)*2*sizeof(int));
+    if (thisList->prev == nullptr)
+        return REALLOC_PREV_FAIL;
+    
+    //verifier 
+    return NO_ERROR;
+}
+
+
+listErrors fillReallocedList (list* thisList)
+{
+    //verifier
+    size_t place = thisList->head;
+    size_t nextPlace = *(thisList->next + head);
+
+    while (*(thisList->next + nextPlace) != 0)
+    {
+        
+    }
+    
+    //verifier        
     return NO_ERROR;
 }
