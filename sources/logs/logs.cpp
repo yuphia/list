@@ -1,4 +1,4 @@
-#include "logs.h"
+#include "logs/logs.h"
 
 logErrors openLogs (LogFile* log)
 {

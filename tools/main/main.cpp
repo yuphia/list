@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "listLib.h"
+#include "listLib/listLib.h"
 
 int main()
 {

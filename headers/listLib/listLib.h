@@ -57,5 +57,5 @@ errorsList listFillEmpty (List *list); //LIST HAS TO BE SORTED!!!
 errorsList listDtor (List *list);
 errorsList verificatorList (List *list, errorMap* verificatorMap);
 errorsList dumpList (errorMap* verificatorMap, errorInfo info);
-errorsList dumpListDot (errorMap* verificatorMap, errorInfo info);
+errorsList dumpDotList (errorMap* verificatorMap, errorInfo info);
 #endif

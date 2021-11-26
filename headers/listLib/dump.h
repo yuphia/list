@@ -3,7 +3,7 @@
 #define DUMP_H 1
 
 #include "listLib.h"
-#include "logs.h"
+#include "logs/logs.h"
 
 #define GET_INFO()\
     errorInfo info = {__PRETTY_FUNCTION__, __LINE__, __FILE__};

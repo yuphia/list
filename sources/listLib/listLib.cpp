@@ -2,9 +2,9 @@
 
 #define LISTLIB_CPP 1
 
-#include "listLib.h"
-#include "dump.h"
-#include "logs.h"
+#include "listLib/listLib.h"
+#include "listLib/dump.h"
+#include "logs/logs.h"
 
 errorsList listCtor (List *list, data_t firstValue)
 {
@@ -138,6 +138,12 @@ errorsList dumpList (errorMap* verificatorMap, errorInfo info)
 
     closeLogs (&logs);
     return NO_ERROR;      
+}
+
+errorsList dumpDotList (errorMap* verificatorMap, errorInfo info)
+{
+
+    return NO_ERROR;
 }
 
 #endif

@@ -9,12 +9,7 @@ add_subdirectory (sources)
 message (STATUS "Collected libs: ${LIBLIST}")
 
 foreach(LIB ${LIBLIST})
-    #if (${LIB} EQUAL listLib)
-     #   message (STATUS "Current lib: ${LIB}")
-    target_include_directories (${LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers/logs) 
-
-    target_include_directories (${LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers)
-    target_include_directories (${LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers/${LIB})  
+    target_include_directories (${LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers) 
 endforeach()
 
 
