@@ -9,8 +9,12 @@ add_subdirectory (sources)
 message (STATUS "Collected libs: ${LIBLIST}")
 
 foreach(LIB ${LIBLIST})
+    #if (${LIB} EQUAL listLib)
+     #   message (STATUS "Current lib: ${LIB}")
+    target_include_directories (${LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers/logs) 
+
     target_include_directories (${LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers)
-    target_include_directories (${LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers/${LIB})   
+    target_include_directories (${LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers/${LIB})  
 endforeach()
 
 
@@ -19,9 +23,10 @@ message (STATUS "Collected tools: ${TOOLLIST}")
 
 foreach(TOOL ${TOOLLIST})
     target_include_directories (${TOOL} PRIVATE "${PROJECT_BINARY_DIR}")
+    target_include_directories (${TOOL} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers/${TOOL}) 
     target_include_directories (${TOOL} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers) 
 
-    if (CMAKE_BUILD_TYPE = DEBUG)
+    if (CMAKE_BUILD_TYPE EQUAL DEBUG)
         target_link_options (${TOOL} PRIVATE "${DED_SAN_LST}")
         target_compile_options (${TOOL} PRIVATE "${DED_SAN}${DED_GCC_WARNS}")
     endif()

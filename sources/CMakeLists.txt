@@ -1,5 +1,6 @@
 set (LIBLIST
     listLib
+    logs
     )
 
 foreach(LIB ${LIBLIST})

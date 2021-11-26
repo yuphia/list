@@ -1,10 +1,10 @@
 set (
-    TOOLS
+    TOOLLIST
     main
     tests
 )
 
-foreach (TOOL ${TOOLS})
+foreach (TOOL ${TOOLLIST})
     add_subdirectory(${TOOL})
 endforeach()
 

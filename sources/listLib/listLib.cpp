@@ -133,7 +133,11 @@ errorsList verificatorList (List *list, errorMap* verificatorMap)
 errorsList dumpList (errorMap* verificatorMap, errorInfo info)
 {
     LogFile logs = {nullptr, 1};
-    fprintf ("");         
+    openLogs (&logs);
+    fprintf (logs.logPointer, "bebra");   
+
+    closeLogs (&logs);
+    return NO_ERROR;      
 }
 
 #endif
