@@ -1,0 +1,1 @@
+add_library (logs logs.cpp)
