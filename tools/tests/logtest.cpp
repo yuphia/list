@@ -11,6 +11,6 @@ int main()
     else
         printf ("Logs dead\n");
 
-    closeLogs (logTest);
+    closeLogs (&logTest);
     return 0;
 }
