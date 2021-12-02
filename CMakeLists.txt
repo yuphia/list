@@ -17,11 +17,14 @@ add_subdirectory (tools)
 message (STATUS "Collected tools: ${TOOLLIST}")
 
 foreach(TOOL ${TOOLLIST}) 
-    if (CMAKE_BUILD_TYPE EQUAL DEBUG)
-        target_link_options (${TOOL} PRIVATE "${DED_SAN_LST}")
-        target_compile_options (${TOOL} PRIVATE "${DED_SAN}${DED_GCC_WARNS}")
-    endif()
+    #if (CMAKE_BUILD_TYPE EQUAL DEBUG)
+    target_link_options (${TOOL} PRIVATE "${DED_SAN_LST}")
+    target_compile_options (${TOOL} PRIVATE "${DED_SAN_LST}")
+    target_compile_options (${TOOL} PRIVATE "${DED_GCC_WARNS_LST}")
 
+    #endif() 
+    target_include_directories (${TOOL} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/headers)
+    
     target_compile_features(${TOOL} PRIVATE cxx_std_11)
     
     target_link_libraries(${TOOL} ${LIBLIST})

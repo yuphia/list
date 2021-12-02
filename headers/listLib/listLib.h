@@ -12,6 +12,8 @@
 
 typedef int data_t;
 
+const size_t START_LIST_CAPACITY = 10;
+
 struct List
     {
     data_t* data;
@@ -22,7 +24,9 @@ struct List
     size_t tail;                
 
     size_t capacity;
-    size_t size; 
+    size_t size;
+
+    size_t free; 
     };
 
 enum errorsList
@@ -32,30 +36,37 @@ enum errorsList
     CALLOC_ERROR,
     POINTER_ERROR,
     OVERFLOW_ERROR,
-    LOG_ERROR
+    LOG_ERROR,
+    FATAL_ERROR
 };
 
 struct errorMap
 {
-    bool listDestructed;
-    bool callocError;
-    bool pointerError;
-    bool overflowError;
+    int map;
+    bool listDestructed; // << 2
+    bool callocError; // Always treated outside of verificator
+    bool pointerError; // << 1
+    bool overflowError; // << 3
     bool logError;
 };
 
 struct errorInfo 
 {
-    char* funcName;
     int line;
-    char* file;
+    const char* funcName;    
+    const char* file;
 };
 
 errorsList listCtor (List *list, data_t firstValue);
-errorsList listPrinter (List *list);
+errorsList listPrinter (List *list, FILE* const stream);
 errorsList listFillEmpty (List *list); //LIST HAS TO BE SORTED!!!
 errorsList listDtor (List *list);
+errorsList listInsertAfter (List *list, size_t place, data_t val);
+errorsList listInsertAfterTail (List *list, data_t val);
+
 errorsList verificatorList (List *list, errorMap* verificatorMap);
-errorsList dumpList (errorMap* verificatorMap, errorInfo info);
+
+bool dumpList (errorMap* verificatorMap, errorInfo info, List* list);
 errorsList dumpDotList (errorMap* verificatorMap, errorInfo info);
+
 #endif

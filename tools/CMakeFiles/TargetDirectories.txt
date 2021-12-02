@@ -1,0 +1,8 @@
+/home/lev/Documents/spiski/tools/CMakeFiles/rebuild_cache.dir
+/home/lev/Documents/spiski/tools/CMakeFiles/edit_cache.dir
+/home/lev/Documents/spiski/tools/main/CMakeFiles/rebuild_cache.dir
+/home/lev/Documents/spiski/tools/main/CMakeFiles/edit_cache.dir
+/home/lev/Documents/spiski/tools/main/CMakeFiles/main.dir
+/home/lev/Documents/spiski/tools/tests/CMakeFiles/rebuild_cache.dir
+/home/lev/Documents/spiski/tools/tests/CMakeFiles/edit_cache.dir
+/home/lev/Documents/spiski/tools/tests/CMakeFiles/tests.dir

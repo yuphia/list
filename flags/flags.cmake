@@ -25,6 +25,9 @@ set(DED_SAN
 string(REPLACE " " ";" DED_SAN_LST "${DED_SAN}")
 
 set(DED_GCC_WARNS
+-Wall
+-Wextra
+-Wpedantic
 -Weffc++
 -Werror
 -Waggressive-loop-optimizations

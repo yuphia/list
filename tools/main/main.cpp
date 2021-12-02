@@ -7,9 +7,12 @@ int main()
 {
     List testList = {};
     listCtor (&testList, 3);
-    listPrinter (&testList);
 
+    listInsertAfterTail (&testList, 5);
+    listInsertAfterTail (&testList, 6);
+
+    listInsertAfter (&testList, testList.tail, 10);
+    //listDtor (&testList);
     listDtor (&testList);
-
     return 0;    
 }

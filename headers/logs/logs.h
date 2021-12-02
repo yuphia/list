@@ -7,11 +7,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-struct LogFile
-{
-    FILE* logPointer;
-    bool isFileOk;
-};
+#define PRINT_SPLITTER() fprintf (logs.logPointer, "\n\n============================================================================"\
+                                                    "\n\n")
+#define PRINT_LOGS(text)\
+    fprintf (logs.logPointer, text) 
 
 enum logErrors
 {
@@ -21,7 +20,15 @@ enum logErrors
     LOG_ALREADY_DEAD
 };  
 
-const size_t BUFF_SIZE = 1e6;
+struct LogFile
+{
+    FILE* logPointer;
+    bool isFileOk;
+    char* fileBuff;
+    logErrors err;
+};
+
+const size_t BUFF_SIZE = 1e7;
 
 logErrors openLogs (LogFile* log);
 logErrors closeLogs (LogFile* log);

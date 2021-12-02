@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/lev/Documents/spiski/tools/main/main.cpp
+stdio.h
+-
+stdlib.h
+-
+listLib/listLib.h
+/home/lev/Documents/spiski/tools/main/listLib/listLib.h
+
