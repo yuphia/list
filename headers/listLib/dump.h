@@ -20,7 +20,7 @@
 
 #define DUMP_LIST()\
         GET_INFO();\
-        errorMap verificatorMap = {};\
+        errorMap verificatorMap = {0};\
         verificatorList (list, &verificatorMap);\
         bool isOk = dumpList (&verificatorMap, info, list);\
         if (isOk == false)\
@@ -30,7 +30,7 @@
 #define DUMP_LIST_END_OF_FUNC()\
         RENEW_INFO();\
         isOk = dumpList (&verificatorMap, info, list);\
-        if (!isOk)\
+        if (isOk == false)\
                 return FATAL_ERROR;
 
 #endif

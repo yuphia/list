@@ -87,9 +87,9 @@ errorsList listFillEmpty (List *list) //LIST HAS TO BE SORTED!!!
         else
             listNextAt(i) = 0;
 
+        listAt (i) = 0;
         listPrevAt(i) = -1;
     }
-
     return NO_ERROR;
 }
 
@@ -129,26 +129,40 @@ errorsList verificatorList (List *list, errorMap* verificatorMap)
 
     if (list == nullptr)
     {
-        verificatorMap->pointerError = 1;
         verificatorMap->map |= 0b1;
+        return NO_ERROR;
     }
 
-    if (list->data == nullptr ||
-        list->next == nullptr ||
-        list->prev == nullptr ||
-        list->head     == -1  ||
-        list->capacity < 0    ||
-        list->size     < 0    ||
+    if (list->data == nullptr &&
+        list->next == nullptr &&
+        list->prev == nullptr &&
+        list->head     == -1  &&
+        list->capacity < 0    &&
+        list->size     < 0    &&
         list->tail     == -1)
     {
-        verificatorMap->listDestructed = 1;        
         verificatorMap->map |= 0b10; 
+        return NO_ERROR;
+    }
+
+    if (list->data == nullptr)
+    {
+        verificatorMap->map |= 0b1000;
+    }
+    
+    if (list->next == nullptr)
+    {
+        verificatorMap->map |= 0b10000;
+    }
+    
+    if (list->prev == nullptr)
+    {
+        verificatorMap->map |= 0b100000;
     }
 
     if (list->capacity < list->size)
     {
         verificatorMap->map |= 0b100;
-        verificatorMap->overflowError = 1;
     }    
 
     return NO_ERROR;        
@@ -157,11 +171,13 @@ errorsList verificatorList (List *list, errorMap* verificatorMap)
 errorsList listInsertAfter (List *list, size_t place, data_t val)
 {   
     DUMP_LIST();
-  
-    /*if (list->size == list->capacity)
+      
+    if (list->size == list->capacity)
     {
-        ;
-    }*/
+        errorsList tempErr = listRealloc (list, 2);
+        if (tempErr != NO_ERROR)
+            return tempErr;
+    }
   
     if (place == list->tail)
     {
@@ -180,6 +196,10 @@ errorsList listInsertAfter (List *list, size_t place, data_t val)
     listPrevAt (insertPlace) = place;
     listPrevAt (listNextAt (insertPlace)) = insertPlace;
 
+    list->isSorted = 0;
+
+    list->size++;
+
     DUMP_LIST_END_OF_FUNC(); 
 
     return NO_ERROR;
@@ -188,12 +208,14 @@ errorsList listInsertAfter (List *list, size_t place, data_t val)
 errorsList listInsertAfterTail (List *list, data_t val)
 {
     DUMP_LIST();
-   
-    /*if (list->size == list->capacity)
+       
+    if (list->size == list->capacity)
     {
-        ;
-    }*/
-   
+        errorsList tempErr = listRealloc (list, 2);
+        if (tempErr != NO_ERROR)
+            return tempErr;
+    }  
+
     size_t insertPlace = list->free;
     list->free = listNextAt (insertPlace);
 
@@ -205,6 +227,8 @@ errorsList listInsertAfterTail (List *list, data_t val)
 
     list->tail = insertPlace;
 
+    list->size++;
+
     DUMP_LIST_END_OF_FUNC ();
     return NO_ERROR;
 }
@@ -213,10 +237,12 @@ errorsList listInsertBeforeHead (List* list, data_t val)
 {
     DUMP_LIST();
     
-    /*if (list->size == list->capacity)
+    if (list->size == list->capacity)
     {
-        ;
-    }*/
+        errorsList tempErr = listRealloc (list, 2);
+        if (tempErr != NO_ERROR)
+            return tempErr;
+    }
 
     size_t insertPlace = list->free;
     list->free = listNextAt (insertPlace);
@@ -229,6 +255,8 @@ errorsList listInsertBeforeHead (List* list, data_t val)
 
     list->head = insertPlace;
 
+    list->size++;
+
     DUMP_LIST_END_OF_FUNC ();
     return NO_ERROR;
 }
@@ -237,10 +265,12 @@ errorsList listInsertBefore (List* list, size_t place, data_t val)
 {
     DUMP_LIST();
 
-    /*if (list->size == list->capacity)
+    if (list->size == list->capacity)
     {
-        ;
-    }*/
+        errorsList tempErr = listRealloc (list, 2);
+        if (tempErr != NO_ERROR)
+            return NO_ERROR;
+    }
    
     if (place == list->head)
     {
@@ -257,6 +287,10 @@ errorsList listInsertBefore (List* list, size_t place, data_t val)
     
     listPrevAt (place) = insertPlace;        
     listNextAt (listPrevAt (insertPlace)) = insertPlace;
+
+    list->isSorted = 0;
+
+    list->size++;
 
     DUMP_LIST_END_OF_FUNC();
 
@@ -277,12 +311,42 @@ bool dumpList (errorMap* verificatorMap, errorInfo info, List* list)
     PRINT_SPLITTER();
     fprintf (logs.logPointer, "[dump #%zu]\n", dumpCounter);   
 
+    if (verificatorMap->map & 0b100000)
+    {
+        PRINT_LOGS ("Error Detected! Error PREV_DEAD.\n"
+                    "Pointer to buffer Next is dead\n"                    
+                    "Be careful!\n"
+                    "The elements aren't going to be printed as it may cause UB\n\n\n");    
+
+        errorState = false;        
+    }
+
+    if (verificatorMap->map & 0b10000)
+    {
+        PRINT_LOGS ("Error Detected! Error NEXT_DEAD.\n"
+                    "Pointer to buffer Next is dead\n"                    
+                    "Be careful!\n"
+                    "The elements aren't going to be printed as it may cause UB\n\n\n");    
+
+        errorState = false;        
+    }
+
+    if (verificatorMap->map & 0b1000)
+    {
+         PRINT_LOGS ("Error Detected! Error DATA_DEAD.\n"
+                    "Pointer to buffer Prev is dead\n"
+                    "Be careful!\n"
+                    "The elements aren't going to be printed as it may cause UB\n\n\n");    
+
+        errorState = false;              
+    }
+
     if (verificatorMap->map & 0b100)
     {
         PRINT_LOGS ("Error Detected! Error OVERFLOW_ERROR.\n"
                     "Somehow the current number of elements is larger than capcity of the buffer\n"
                     "Be careful!\n"
-                    "The elements aren't going to be printed as it may cause UB\n");    
+                    "The elements aren't going to be printed as it may cause UB\n\n\n");    
 
         errorState = false;        
     }
@@ -292,7 +356,16 @@ bool dumpList (errorMap* verificatorMap, errorInfo info, List* list)
         PRINT_LOGS ("Error Detected! Error LIST_DESTRUCTED.\n"
                     "The data structure has already been destructed\n"
                     "Be careful!\n"
-                    "The elements aren't going to be printed as it may cause UB\n");   
+                    "The elements aren't going to be printed as it may cause UB\n\n\n");   
+        errorState = false;        
+    }
+
+    if (verificatorMap->map & 0b1)
+    {
+        PRINT_LOGS ("Error Detected! Error POINTER_ERROR.\n"
+                    "The pointer to data structure is equal to nullptr\n"
+                    "Be careful!\n"
+                    "The elements aren't going to be printed as it may cause UB\n\n\n");   
         errorState = false;        
     }
 
@@ -307,6 +380,26 @@ bool dumpList (errorMap* verificatorMap, errorInfo info, List* list)
                     "In Line: %d\n\n", 
                     info.file, info.funcName, info.line);
 
+        fprintf (logs.logPointer,
+                    "Pointer to data: %p\n"
+                    "Pointer to next: %p\n"
+                    "Pointer to prev: %p\n"
+                    "Head: %zu\n"
+                    "Tail: %zu\n"
+                    "Capacity: %zu\n"
+                    "Size: %zu\n"
+                    "Free: %zu\n"
+                    "isSorted: %d\n\n", 
+                    list->data,
+                    list->next,
+                    list->prev,
+                    list->head,
+                    list->tail,
+                    list->capacity,
+                    list->size,
+                    list->free,
+                    list->isSorted);
+
         listPrinter (list, logs.logPointer);
     }
     PRINT_SPLITTER();
@@ -315,7 +408,7 @@ bool dumpList (errorMap* verificatorMap, errorInfo info, List* list)
     if (logs.err != 0)
     {
         printf ("Logs are dead, error when closing\n");
-        return LOG_ERROR;
+        return false;
     }
 
     dumpCounter++;
@@ -328,7 +421,128 @@ errorsList dumpDotList (errorMap* verificatorMap, errorInfo info)
     return NO_ERROR;
 }
 
-//void printError ()
+errorsList listRealloc (List *list, size_t newSize)
+{   
+    DUMP_LIST();
+
+    list->data = (data_t*) realloc (list->data, newSize * list->capacity * sizeof (data_t));
+    list->next = (int*)    realloc (list->next, newSize * list->capacity * sizeof    (int));
+    list->prev = (int*)    realloc (list->prev, newSize * list->capacity * sizeof    (int));
+    
+    list->capacity *= newSize;
+    listFillEmpty (list);
+    
+    list->free = list->size;
+
+    listSort (list);
+
+    DUMP_LIST_END_OF_FUNC();
+    return NO_ERROR;
+}
+
+errorsList listSort (List *list)
+{
+    DUMP_LIST ();
+
+    size_t saveI = 0;
+
+    listSwap (list, 1, list->head, 0);
+
+    for (size_t i = 2, offset = 0; i < list->capacity; i++)
+    {
+        if (listPrevAt (i) != -1 && listPrevAt (i - 1 - offset) != -1)
+        {
+            if (listNextAt (i - 1 - offset) != 0)
+                listSwap (list, i, listNextAt (i - 1 - offset), offset);
+            else
+                listSwap (list, i, i - 1, offset);
+        }
+        else
+            offset++;
+
+        if (i-2 < list->size && i != 2)
+        {
+            listPrevAt (i - 2) = i - 3;
+
+            if (i - 2 != list->size - 1)
+                listNextAt (i - 2) = i - 1;
+            else
+                listNextAt (i - 2) = 0;
+        }
+        else if (i != 2)
+        {
+            listNextAt (i - 2) = i - 1;
+            listPrevAt (i - 2) = -1;
+        }
+
+        saveI = i;
+    }
+
+    int sizeCapacityGap = list->capacity - saveI;
+
+    for (sizeCapacityGap; sizeCapacityGap > 0; sizeCapacityGap--)
+    {
+        listNextAt (list->capacity - sizeCapacityGap) =  0;
+        listPrevAt (list->capacity - sizeCapacityGap) = -1;
+    }   
+
+    list->isSorted = 1;
+
+    DUMP_LIST_END_OF_FUNC ();
+    return NO_ERROR;
+}
+
+errorsList listSwap (List *list, size_t n1, size_t n2, size_t offset)
+{
+    DUMP_LIST();
+
+    data_t tempValN1 = listAt (n1);
+    data_t tempValN2 = listAt (n2);
+
+    listAt (n1) = 0;
+    listAt (n2) = 0;
+
+    listAt (n1 - offset) = tempValN2;
+    listAt (n2 - offset) = tempValN1;
+
+    
+
+    /*size_t tempNext = listNextAt (n1);
+    listNextAt (n1) = listNextAt (n2);
+    listNextAt (n2) = tempNext;*/
+
+    /*size_t tempPrev = listPrevAt (n1);
+    listPrevAt (n1) = listPrevAt (n2);
+    listPrevAt (n2) = tempPrev;*/
+
+    DUMP_LIST_END_OF_FUNC();
+}
+
+errorsList listDeleteElement (List *list, size_t place)
+{
+    DUMP_LIST();
+
+    listAt (place) = 0;
+    
+    if (place == list->head)
+        list->head = listNextAt (place);
+        
+    listPrevAt (listNextAt (place)) = listPrevAt (place);
+    
+    if (place == list->tail)
+        list->tail = listPrevAt (place);
+
+    listNextAt (listPrevAt (place)) = listNextAt (place);
+
+    listNextAt (place) = list->free;
+    list->free = place;
+    listPrevAt (place) = -1;
+
+    list->size--;
+
+    DUMP_LIST_END_OF_FUNC();
+    return NO_ERROR;
+}
 
 #endif
 

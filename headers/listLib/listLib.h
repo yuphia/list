@@ -26,7 +26,9 @@ struct List
     size_t capacity;
     size_t size;
 
-    size_t free; 
+    size_t free;
+
+    bool isSorted = 1; 
     };
 
 enum errorsList
@@ -34,8 +36,12 @@ enum errorsList
     NO_ERROR,
     LIST_DESTRUCTED,
     CALLOC_ERROR,
+    REALLOC_ERROR,
     POINTER_ERROR,
     OVERFLOW_ERROR,
+    DATA_DEAD,
+    NEXT_DEAD,
+    PREV_DEAD,
     LOG_ERROR,
     FATAL_ERROR
 };
@@ -43,11 +49,6 @@ enum errorsList
 struct errorMap
 {
     int map;
-    bool listDestructed; // << 2
-    bool callocError; // Always treated outside of verificator
-    bool pointerError; // << 1
-    bool overflowError; // << 3
-    bool logError;
 };
 
 struct errorInfo 
@@ -66,6 +67,11 @@ errorsList listInsertAfter (List *list, size_t place, data_t val);
 errorsList listInsertAfterTail (List *list, data_t val);
 errorsList listInsertBeforeHead (List* list, data_t val);
 errorsList listInsertBefore (List* list, size_t place, data_t val);
+errorsList listDeleteElement (List *list, size_t place);
+
+errorsList listSwap (List *list, size_t n1, size_t n2, size_t offset);
+errorsList listSort (List *list);
+errorsList listRealloc (List *list, size_t newSize);
 
 errorsList verificatorList (List *list, errorMap* verificatorMap);
 
