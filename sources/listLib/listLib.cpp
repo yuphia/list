@@ -157,10 +157,12 @@ errorsList verificatorList (List *list, errorMap* verificatorMap)
 errorsList listInsertAfter (List *list, size_t place, data_t val)
 {   
     DUMP_LIST();
+  
     /*if (list->size == list->capacity)
     {
         ;
     }*/
+  
     if (place == list->tail)
     {
         errorsList tempErr = listInsertAfterTail (list, val);
@@ -172,12 +174,11 @@ errorsList listInsertAfter (List *list, size_t place, data_t val)
 
     listAt (insertPlace) = val;
 
-    size_t nextForIns = listNextAt (place);
+    listNextAt (insertPlace) = listNextAt (place);
     listNextAt (place) = insertPlace;
-    listNextAt (insertPlace) = nextForIns;
 
     listPrevAt (insertPlace) = place;
-    listPrevAt (nextForIns) = insertPlace;
+    listPrevAt (listNextAt (insertPlace)) = insertPlace;
 
     DUMP_LIST_END_OF_FUNC(); 
 
@@ -187,23 +188,78 @@ errorsList listInsertAfter (List *list, size_t place, data_t val)
 errorsList listInsertAfterTail (List *list, data_t val)
 {
     DUMP_LIST();
+   
+    /*if (list->size == list->capacity)
+    {
+        ;
+    }*/
+   
+    size_t insertPlace = list->free;
+    list->free = listNextAt (insertPlace);
+
+    listAt (insertPlace) = val;
+    listPrevAt (insertPlace) = list->tail;
+    listNextAt (insertPlace) = 0;
+
+    listNextAt (list->tail) = insertPlace;
+
+    list->tail = insertPlace;
+
+    DUMP_LIST_END_OF_FUNC ();
+    return NO_ERROR;
+}
+
+errorsList listInsertBeforeHead (List* list, data_t val)
+{
+    DUMP_LIST();
+    
     /*if (list->size == list->capacity)
     {
         ;
     }*/
 
-    listAt (list->free) = val;
-    listPrevAt (list->free) = list->tail;
+    size_t insertPlace = list->free;
+    list->free = listNextAt (insertPlace);
 
-    size_t tempFree = list->free;
-    list->free = listNextAt (list->free);
+    listAt (insertPlace) = val;
+    listNextAt (insertPlace) = list->head;
+    listPrevAt (insertPlace) = 0;
 
-    listNextAt (tempFree) = 0;
-    listNextAt (list->tail) = tempFree;
+    listPrevAt (list->head) = insertPlace;
 
-    list->tail = tempFree;
+    list->head = insertPlace;
+
+    DUMP_LIST_END_OF_FUNC ();
+    return NO_ERROR;
+}
+
+errorsList listInsertBefore (List* list, size_t place, data_t val)
+{
+    DUMP_LIST();
+
+    /*if (list->size == list->capacity)
+    {
+        ;
+    }*/
+   
+    if (place == list->head)
+    {
+        errorsList tempErr = listInsertBeforeHead (list, val);
+        return tempErr;
+    }
+
+    size_t insertPlace = list->free;
+    list->free = listNextAt (insertPlace);
+
+    listAt (insertPlace) = val;
+    listNextAt (insertPlace) = place;
+    listPrevAt (insertPlace) = listPrevAt (place);
+    
+    listPrevAt (place) = insertPlace;        
+    listNextAt (listPrevAt (insertPlace)) = insertPlace;
 
     DUMP_LIST_END_OF_FUNC();
+
     return NO_ERROR;
 }
 

@@ -11,7 +11,7 @@ int main()
     listInsertAfterTail (&testList, 5);
     listInsertAfterTail (&testList, 6);
 
-    listInsertAfter (&testList, testList.tail, 10);
+    listInsertBefore (&testList, 2, 10);
     //listDtor (&testList);
     listDtor (&testList);
     return 0;    

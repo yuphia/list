@@ -61,8 +61,11 @@ errorsList listCtor (List *list, data_t firstValue);
 errorsList listPrinter (List *list, FILE* const stream);
 errorsList listFillEmpty (List *list); //LIST HAS TO BE SORTED!!!
 errorsList listDtor (List *list);
+
 errorsList listInsertAfter (List *list, size_t place, data_t val);
 errorsList listInsertAfterTail (List *list, data_t val);
+errorsList listInsertBeforeHead (List* list, data_t val);
+errorsList listInsertBefore (List* list, size_t place, data_t val);
 
 errorsList verificatorList (List *list, errorMap* verificatorMap);
 
