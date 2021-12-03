@@ -69,9 +69,15 @@ errorsList listInsertBeforeHead (List* list, data_t val);
 errorsList listInsertBefore (List* list, size_t place, data_t val);
 errorsList listDeleteElement (List *list, size_t place);
 
-errorsList listSwap (List *list, size_t n1, size_t n2, size_t offset);
+errorsList listSwap (List *list, size_t n1, size_t n2);
 errorsList listSort (List *list);
 errorsList listRealloc (List *list, size_t newSize);
+errorsList listSwapTailHead (List *list);
+
+errorsList listReverseSwap (List* list, size_t n);
+errorsList listReverse (List* list);
+
+errorsList listPrintLogic (List *list, FILE* stream);
 
 errorsList verificatorList (List *list, errorMap* verificatorMap);
 

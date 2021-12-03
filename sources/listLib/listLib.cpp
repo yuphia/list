@@ -444,55 +444,38 @@ errorsList listSort (List *list)
 {
     DUMP_LIST ();
 
-    size_t saveI = 0;
+    data_t* newData = (data_t*)calloc (list->capacity, sizeof(data_t));
+    int*    newNext = (int*)   calloc (list->capacity, sizeof   (int));
+    int*    newPrev = (int*)   calloc (list->capacity, sizeof   (int));
 
-    listSwap (list, 1, list->head, 0);
-
-    for (size_t i = 2, offset = 0; i < list->capacity; i++)
+    for (size_t placeInOldList = list->head, placeInNewList = 1;
+         listNextAt (placeInOldList) != 0 
+         || listPrevAt (placeInOldList) != 0;
+         placeInOldList = listNextAt(placeInOldList), placeInNewList++)
     {
-        if (listPrevAt (i) != -1 && listPrevAt (i - 1 - offset) != -1)
-        {
-            if (listNextAt (i - 1 - offset) != 0)
-                listSwap (list, i, listNextAt (i - 1 - offset), offset);
-            else
-                listSwap (list, i, i - 1, offset);
-        }
-        else
-            offset++;
-
-        if (i-2 < list->size && i != 2)
-        {
-            listPrevAt (i - 2) = i - 3;
-
-            if (i - 2 != list->size - 1)
-                listNextAt (i - 2) = i - 1;
-            else
-                listNextAt (i - 2) = 0;
-        }
-        else if (i != 2)
-        {
-            listNextAt (i - 2) = i - 1;
-            listPrevAt (i - 2) = -1;
-        }
-
-        saveI = i;
+        *(newData + placeInNewList) =     listAt (placeInOldList);
+        *(newNext + placeInNewList) =          placeInNewList + 1;
+        *(newPrev + placeInNewList) =          placeInNewList - 1;
     }
 
-    int sizeCapacityGap = list->capacity - saveI;
+    free (list->data);
+    free (list->next);
+    free (list->prev);
+    
+    list->data = newData;
+    list->next = newNext;
+    list->prev = newPrev;
 
-    for (sizeCapacityGap; sizeCapacityGap > 0; sizeCapacityGap--)
-    {
-        listNextAt (list->capacity - sizeCapacityGap) =  0;
-        listPrevAt (list->capacity - sizeCapacityGap) = -1;
-    }   
+    list->head =              1;
+    list->tail = list->size - 1;
 
-    list->isSorted = 1;
+    listFillEmpty (list);
 
     DUMP_LIST_END_OF_FUNC ();
     return NO_ERROR;
 }
 
-errorsList listSwap (List *list, size_t n1, size_t n2, size_t offset)
+errorsList listSwap (List *list, size_t n1, size_t n2)
 {
     DUMP_LIST();
 
@@ -502,8 +485,8 @@ errorsList listSwap (List *list, size_t n1, size_t n2, size_t offset)
     listAt (n1) = 0;
     listAt (n2) = 0;
 
-    listAt (n1 - offset) = tempValN2;
-    listAt (n2 - offset) = tempValN1;
+    listAt (n1) = tempValN2;
+    listAt (n2) = tempValN1;
 
     
 
@@ -514,8 +497,11 @@ errorsList listSwap (List *list, size_t n1, size_t n2, size_t offset)
     /*size_t tempPrev = listPrevAt (n1);
     listPrevAt (n1) = listPrevAt (n2);
     listPrevAt (n2) = tempPrev;*/
+    list->isSorted = 0;
 
     DUMP_LIST_END_OF_FUNC();
+
+    return NO_ERROR;
 }
 
 errorsList listDeleteElement (List *list, size_t place)
@@ -539,6 +525,62 @@ errorsList listDeleteElement (List *list, size_t place)
     listPrevAt (place) = -1;
 
     list->size--;
+
+    DUMP_LIST_END_OF_FUNC();
+    return NO_ERROR;
+}
+errorsList listReverse (List* list)
+
+{
+    DUMP_LIST();
+
+    for (size_t i = list->head; listNextAt (i) != 0 || listPrevAt (i) != 0;
+                                                         i = listPrevAt (i))
+        listReverseSwap (list, i);       
+
+    listSwapTailHead (list);
+
+    list->isSorted = 0;
+
+    DUMP_LIST_END_OF_FUNC();
+
+    return NO_ERROR;
+}
+
+errorsList listReverseSwap (List* list, size_t n)
+{
+    DUMP_LIST();
+
+    size_t nextSave = listNextAt (n);
+    listNextAt (n) = listPrevAt (n);
+    listPrevAt (n) = nextSave; 
+
+    list->isSorted = 0;
+
+    DUMP_LIST_END_OF_FUNC();
+
+    return NO_ERROR;
+}
+
+errorsList listPrintLogic (List *list, FILE* stream)
+{
+    DUMP_LIST();
+
+    for (size_t i = list->head; listNextAt (i) != 0 || listPrevAt (i) != 0;
+                                                       i = listNextAt (i))
+        fprintf (stream, "%d\n", listAt (i));
+
+    DUMP_LIST_END_OF_FUNC();
+    return NO_ERROR;
+}
+
+errorsList listSwapTailHead (List *list)
+{
+    DUMP_LIST();
+
+    size_t headSave = list->head;
+    list->head = list->tail;
+    list->tail = headSave;
 
     DUMP_LIST_END_OF_FUNC();
     return NO_ERROR;
