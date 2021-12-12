@@ -23,6 +23,9 @@ int main()
     listInsertAfterTail (&testList, 5);
     listInsertAfterTail (&testList, 4);
     listInsertAfterTail (&testList, 3);
+
+    dumpDotList (&testList);
+
     listInsertAfterTail (&testList, 2);
     listInsertAfterTail (&testList, 1);
    

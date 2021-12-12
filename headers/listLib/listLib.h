@@ -81,7 +81,16 @@ errorsList listPrintLogic (List *list, FILE* stream);
 
 errorsList verificatorList (List *list, errorMap* verificatorMap);
 
+void dumpDotListNodeFree (List* list, size_t physicalSpace, FILE* dotFile);
+void dumpDotListNodeNotFree (List* list, size_t physicalSpace, FILE* dotFile);
+void dumpDotEndGraph (FILE* dotFile);
+void dumpDotSetupGraphNotFree (FILE* dotFile);
+void dumpDotSetupGraphFree (FILE* dotFile);
+void dumpDotConnectNotFree (List* list, FILE* dotFile);
+void endDotFree (FILE* dotFile);
+void dumpDotConnectFree (List* list, FILE* dotFile);
+
 bool dumpList (errorMap* verificatorMap, errorInfo info, List* list);
-errorsList dumpDotList (errorMap* verificatorMap, errorInfo info);
+errorsList dumpDotList (List* list);
 
 #endif

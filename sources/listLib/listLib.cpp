@@ -415,9 +415,30 @@ bool dumpList (errorMap* verificatorMap, errorInfo info, List* list)
     return errorState;      
 }
 
-errorsList dumpDotList (errorMap* verificatorMap, errorInfo info)
+errorsList dumpDotList (List *list)
 {
+    FILE* dotLog = fopen ("dotShit.dot", "w");
 
+    dumpDotSetupGraphNotFree (dotLog);
+
+    dumpDotListNodeNotFree (list, 0, dotLog);
+
+    for (int i = list->head; i != 0; i = listNextAt(i))
+        dumpDotListNodeNotFree (list, i, dotLog);
+
+    dumpDotSetupGraphFree (dotLog);
+
+    for (int i = list->free; listNextAt (i) != 0; i = listNextAt(i))
+        dumpDotListNodeFree (list, i, dotLog);
+
+    endDotFree (dotLog);
+
+    dumpDotConnectNotFree (list, dotLog);
+    dumpDotConnectFree (list, dotLog);
+
+    dumpDotEndGraph (dotLog);
+
+    fclose (dotLog);
     return NO_ERROR;
 }
 
@@ -586,5 +607,68 @@ errorsList listSwapTailHead (List *list)
     return NO_ERROR;
 }
 
+
+void dumpDotListNodeNotFree (List* list, size_t physicalSpace, FILE* dotFile)
+{
+    static int rank = 1;
+    fprintf (dotFile, "    node%zu [rank = %d, shape = record, label = \"physSpace = %zu "
+                      "| {<prev> prev = %d | <data> data = %d | <next> next = %d}\"];\n",
+                    physicalSpace, rank, physicalSpace, listPrevAt (physicalSpace), listAt (physicalSpace), listNextAt (physicalSpace));
+
+    rank++;
+}
+
+void dumpDotListNodeFree (List* list, size_t physicalSpace, FILE* dotFile)
+{
+    static int rank = 1;
+    fprintf (dotFile, "    free%zu [rank = %d, shape = record, label = \"next = %d \"];\n", 
+                    physicalSpace, rank, listNextAt (physicalSpace));
+
+    rank++;
+}
+
+void dumpDotSetupGraphFree (FILE* dotFile)
+{
+    fprintf (dotFile, "    node [color = green];\n"
+                      "    subgraph cluster_Free{\n");
+}
+
+void endDotFree (FILE* dotFile)
+{
+    fprintf (dotFile, "    label = \"Free elements\";\n"
+                      "    color = green;\n"
+                      "}\n");
+}
+
+void dumpDotSetupGraphNotFree (FILE* dotFile)
+{
+    fprintf (dotFile, "digraph List{\n"
+                   "    rankdir = LR;\n"    
+                   "    edge [dir =\"both\"];\n");
+}
+
+void dumpDotEndGraph (FILE* dotFile)
+{
+    fprintf (dotFile, "}\n");
+}
+
+void dumpDotConnectFree (List* list, FILE* dotFile)
+{
+    fprintf (dotFile, "edge [dir = \"forward\"];\n");
+    for (int i = list->free; listPrevAt (listNextAt(i)) != -1 || listNextAt(listNextAt(i)) != 0; i = listNextAt (i))
+    {
+        printf ("%d\n", i);
+        fprintf (dotFile, "    \"free%d\" -> \"free%d\";\n", i, listNextAt (i));
+    }
+}
+
+void dumpDotConnectNotFree (List* list, FILE* dotFile)
+{
+    for (int i = list->head; listPrevAt (i) != 0 || listNextAt(i) != 0; i = listNextAt (i))
+    {
+        //printf ("%d\n", i);
+        fprintf (dotFile, "    \"node%d\":<next> -> \"node%d\":<prev>;\n", listPrevAt (i), i);
+    }
+}
 #endif
 
