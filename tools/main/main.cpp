@@ -29,17 +29,17 @@ int main()
     listInsertAfterTail (&testList, 2);
     listInsertAfterTail (&testList, 1);
    
-    listPrintLogic (&testList, stdout);
+//    listPrintLogic (&testList, stdout);
 
     listReverse (&testList);
 
-    listPrintLogic (&testList, stdout);
+//    listPrintLogic (&testList, stdout);
 
-    listPrinter (&testList, stdout);
+//    listPrinter (&testList, stdout);
 
     listSort (&testList);
 
-    listPrinter (&testList, stdout);
+//    listPrinter (&testList, stdout);
 
     //listInsertBefore (&testList, 2, 10);
 

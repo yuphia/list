@@ -415,32 +415,6 @@ bool dumpList (errorMap* verificatorMap, errorInfo info, List* list)
     return errorState;      
 }
 
-errorsList dumpDotList (List *list)
-{
-    FILE* dotLog = fopen ("dotShit.dot", "w");
-
-    dumpDotSetupGraphNotFree (dotLog);
-
-    dumpDotListNodeNotFree (list, 0, dotLog);
-
-    for (int i = list->head; i != 0; i = listNextAt(i))
-        dumpDotListNodeNotFree (list, i, dotLog);
-
-    dumpDotSetupGraphFree (dotLog);
-
-    for (int i = list->free; listNextAt (i) != 0; i = listNextAt(i))
-        dumpDotListNodeFree (list, i, dotLog);
-
-    endDotFree (dotLog);
-
-    dumpDotConnectNotFree (list, dotLog);
-    dumpDotConnectFree (list, dotLog);
-
-    dumpDotEndGraph (dotLog);
-
-    fclose (dotLog);
-    return NO_ERROR;
-}
 
 errorsList listRealloc (List *list, size_t newSize)
 {   
@@ -657,7 +631,6 @@ void dumpDotConnectFree (List* list, FILE* dotFile)
     fprintf (dotFile, "edge [dir = \"forward\"];\n");
     for (int i = list->free; listPrevAt (listNextAt(i)) != -1 || listNextAt(listNextAt(i)) != 0; i = listNextAt (i))
     {
-        printf ("%d\n", i);
         fprintf (dotFile, "    \"free%d\" -> \"free%d\";\n", i, listNextAt (i));
     }
 }
@@ -669,6 +642,32 @@ void dumpDotConnectNotFree (List* list, FILE* dotFile)
         //printf ("%d\n", i);
         fprintf (dotFile, "    \"node%d\":<next> -> \"node%d\":<prev>;\n", listPrevAt (i), i);
     }
+}
+errorsList dumpDotList (List *list)
+{
+    FILE* dotLog = fopen ("dotShit.dot", "w");
+
+    dumpDotSetupGraphNotFree (dotLog);
+
+    dumpDotListNodeNotFree (list, 0, dotLog);
+
+    for (int i = list->head; i != 0; i = listNextAt(i))
+        dumpDotListNodeNotFree (list, i, dotLog);
+
+    dumpDotSetupGraphFree (dotLog);
+
+    for (int i = list->free; listNextAt (i) != 0; i = listNextAt(i))
+        dumpDotListNodeFree (list, i, dotLog);
+
+    endDotFree (dotLog);
+
+    dumpDotConnectNotFree (list, dotLog);
+    dumpDotConnectFree (list, dotLog);
+
+    dumpDotEndGraph (dotLog);
+
+    fclose (dotLog);
+    return NO_ERROR;
 }
 #endif
 
