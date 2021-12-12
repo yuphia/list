@@ -12,7 +12,8 @@
 
 ## Graph dump
 
-    Using function dumpDotList fills the file with the name in args, let it be "dotShit.dot", with instructions for dot program of graphviz
+    Using function dumpDotList fills the file with the name in args,
+    lets name it "dotShit.dot", with instructions for dot program of graphviz
     Create a .png file for dot with *touch YOUR_NAME.png* (you can use other formats)
     Run dot with following arguments:
         -Tpng ~ sets the format to png (you can change it)
