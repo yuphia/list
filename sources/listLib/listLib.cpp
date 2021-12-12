@@ -643,9 +643,9 @@ void dumpDotConnectNotFree (List* list, FILE* dotFile)
         fprintf (dotFile, "    \"node%d\":<next> -> \"node%d\":<prev>;\n", listPrevAt (i), i);
     }
 }
-errorsList dumpDotList (List *list)
+errorsList dumpDotList (List *list, char* name)
 {
-    FILE* dotLog = fopen ("dotShit.dot", "w");
+    FILE* dotLog = fopen (name, "w");
 
     dumpDotSetupGraphNotFree (dotLog);
 

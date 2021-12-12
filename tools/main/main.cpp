@@ -24,7 +24,8 @@ int main()
     listInsertAfterTail (&testList, 4);
     listInsertAfterTail (&testList, 3);
 
-    dumpDotList (&testList);
+    char name[] = "dotShit.txt";
+    dumpDotList (&testList, name);
 
     listInsertAfterTail (&testList, 2);
     listInsertAfterTail (&testList, 1);

@@ -91,6 +91,6 @@ void endDotFree (FILE* dotFile);
 void dumpDotConnectFree (List* list, FILE* dotFile);
 
 bool dumpList (errorMap* verificatorMap, errorInfo info, List* list);
-errorsList dumpDotList (List* list);
+errorsList dumpDotList (List* list, char* name);
 
 #endif
